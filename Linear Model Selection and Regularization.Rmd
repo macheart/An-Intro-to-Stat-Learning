@@ -1,0 +1,35 @@
+---
+title: "chpt6 Applied Questions"
+author: "Prisma Erika Lopez Jimenez"
+date: "1/14/2020"
+output: html_document
+---
+
+```{r Load your Workspace}
+library(leaps)
+```
+
+```{r}
+# Applied Question 8
+# In this exercise, we will generate simulated data, and will then use this data to perform best subset selection
+# (a) Use the rnorm() function to generate a predictor X of length n=100, as well as a noise vector epsilon of length n=100.
+
+x=rnorm(100)
+epsilon=rnorm(100) # 
+
+# (b) Generate a response vector Y of length n=100 according to the model: Y=B0+B1X+B2X^2+B3X^3 + epsilon
+# Where Bn are constants of your choice
+y.f=function(x,epsilon){
+Y=0.56+0.49*x+0.23*x^2+0.57*x^3+epsilon 
+return(Y)
+}
+Y=y.f(x,epsilon) # 
+
+# (c) Use the regsubsets() function to perform best subset selection in order to choose the best model containing the predictors X, X^2,....,X^10. What is the best model obtained according to Cp,BIC, and adjusted R^2? Show some plots to provide evidence for your answer and report the coefficients of the best model obtained. Note you will need to use the data.frame() function to create a single data set containing both X and Y. 
+
+df=data.frame(x,Y)
+colnames(df)=c("Predictor","Response")
+regsubsets(as.matrix(df[,-1]),df[,1])
+
+```
+
