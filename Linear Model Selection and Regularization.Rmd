@@ -7,6 +7,7 @@ output: html_document
 
 ```{r Load your Workspace}
 library(leaps)
+library(ISLR)
 ```
 
 ```{r}
@@ -27,9 +28,54 @@ Y=y.f(x,epsilon) #
 
 # (c) Use the regsubsets() function to perform best subset selection in order to choose the best model containing the predictors X, X^2,....,X^10. What is the best model obtained according to Cp,BIC, and adjusted R^2? Show some plots to provide evidence for your answer and report the coefficients of the best model obtained. Note you will need to use the data.frame() function to create a single data set containing both X and Y. 
 
-df=data.frame(x,Y)
-colnames(df)=c("Predictor","Response")
-regsubsets(as.matrix(df[,-1]),df[,1])
+coef(mod,9) # coefficients 
+#### non-random
+
+set.seed(1)
+#train=sample(c(TRUE,FALSE),nrow(Hitters),rep=TRUE)
+#test=(!train)
+
+fit.best=regsubsets(Salary~.,data=Hitters,nvmax=19)
+fit.best.sum=summary(fit.best)
+names(fit.best.sum) # adjustment methods
+
+par(mfrow=c(2,2))
+plot(fit.best.sum$rss,xlab="Number of Variables",ylab="RSS",type="l") 
+plot(fit.best.sum$adjr2,xlab="Number of Variables",ylab="Adjusted RSq",type="l")
+which.max(fit.best.sum$adjr2) # max val for adjr2
+points(11,fit.best.sum$adjr2[11],col="red",cex=2,pch=20)
+
+plot(fit.best.sum$cp,xlab="Number of Variables",ylab="Cp",type='l')
+which.min(fit.best.sum$cp) # min val for cp
+points(10,fit.best.sum$cp[10],col="red",cex=2,pch=20)
+which.min(fit.best.sum$bic) # min val for bic
+plot(fit.best.sum$bic,xlab="Number of Variables",ylab="BIC",type='l')
+points(6,fit.best.sum$bic[6],col="red",cex=2,pch=20)
+
+plot(fit.best,scale="r2")
+plot(fit.best,scale="adjr2") # 10 associ. models
+plot(fit.best,scale="Cp") # 10 associ. models
+plot(fit.best,scale="bic") # 6 associ. models
+
+coef(fit.best,6) # coeff. for variables
+coef
+
+# (d) Apply forward step-wise selection and also using backward stepwise selection. How does your answer compare to the results above?
+#### forward step-wise selection
+fit.for=regsubsets(Salary~.,data=Hitters,nvmax=19,method="forward")
+summary(fit.for)
+
+
+#### backwards step-wise selection
+fit.bw=regsubsets(Salary~.,data=Hitters,nvmax=19,method="backward")
+
+#### comparisons
+# each list is diff:
+coef(fit.best,7)
+coef(fit.for,7)
+coef(fit.bw,7)
+# same:
+coef(fit.best,2) 
+coef(fit.for,2)
 
 ```
-
