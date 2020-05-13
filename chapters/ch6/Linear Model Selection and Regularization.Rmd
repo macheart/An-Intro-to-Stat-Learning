@@ -8,6 +8,7 @@ output: html_document
 ```{r Load your Workspace}
 library(leaps)
 library(ISLR)
+library(glmnet)
 ```
 
 ```{r}
@@ -78,4 +79,27 @@ coef(fit.bw,7)
 coef(fit.best,2) 
 coef(fit.for,2)
 
+# (e) Fit a lasso model to the simulated data, again using X, X^2,...,X^10 as predictors. Use cross-validation to select the optimal value of lambda. Create plots of the cross-validation error as a function of lambda. Report the resulting coefficient estimates, and discuss the results obtained.
+set.seed(1)
+x=model.matrix(Salary~.,Hitters)[,-1]
+y=Hitters$Salary
+train=sample(1:nrow(x),nrow(x)/2)
+test=(-train)
+y.test=y[test]
+grid=10^seq(10,-2,length=100)
+
+
+lasso.mod=glmnet(x[train,],y[train],alpha=1,lambda=grid)
+plot(lasso.mod)
+
+# (f) Now generate a response vector Y according to the model:
+# Y=B(not) +B(7)X^7+epsilon
+# And perform best subset selection and the lasso, Discuss the results obtained.
+ 
+
 ```
+
+```{r}
+
+```
+
